@@ -1,20 +1,29 @@
-<h1>Real Time Search</h1>
-<!--Realtime search box-->
+<div class="flex flex-col w-full justify-center items-center">
+<h1 class="text-center " id="heading">Real Time Search</h1>
 <div id="results" data-controller="search">
-  <input id="search" type="search" data-action="search#log" autocomplete = "off">
+  <div  class="flex w-full justify-center">
+      <input id="search" type="search" data-action="search#log" autocomplete = "off">
+  </div>
   <div id="search-results">
-    <ul>
-        Log
-      <div data-search-target="searches" id="searches">
+    <div class="flex flex-col text-center">
+      <p class="text-lg">Log</p>
+    <ul  class="flex flex-col text-center">
+        
+      <div data-search-target="searches" id="searches" class="text-start">
         <%= render partial: :search, collection: @searches %>
       </div>
         <li data-search-target="log"></li>
-    </ul> 
-    <div id="analytics" >
-        Trends
-        <div data-search-target="analytics">
+    </ul>
+    </div>
+    
+    <div id="analytics" class="flex flex-col text-center" >
+       
+        <p class="text-lg"> Trends</p>
+
+        <ul data-search-target="analytics" class="text-start">
           <%= render partial:  'searches/analytics', locals: {counts: @counts}  %>
-        </div>
+        </ul>
     </div>
   </div>
+</div>
 </div>

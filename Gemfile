@@ -71,3 +71,4 @@ group :test do
 
 end
 gem 'requestjs-rails'
+

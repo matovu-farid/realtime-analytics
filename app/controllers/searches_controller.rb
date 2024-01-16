@@ -20,7 +20,7 @@ class SearchesController < ApplicationController
     @search.user = request.remote_ip
 
     last_search = Search.where(user: request.remote_ip).order(created_at: :desc).first
-    @removed_last_saved = remove_last_saved_search(last_search, @search)
+    remove_last_saved_search(last_search, @search)
     @searches = all_user_searches
 
     respond_to do |format|
