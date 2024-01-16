@@ -2,14 +2,14 @@ class SearchesController < ApplicationController
   def index
     # display all saved searches for the current user using ip address tracking
     @searches = all_user_searches
-    @counts = Search.group(:text).count
+    @counts = Count.where(user: request.remote_ip).order(count: :desc).limit(10)
   end
 
   def analytics
-    @counts = Search.group(:text).where(user: request.remote_ip).count
+    @counts = Count.where(user: request.remote_ip).order(count: :desc).limit(10)
     respond_to do |format|
       format.json { render json: Search.group(:text).count }
-      format.html { render partial: 'searches/analytics', status: :ok, locals: { counts: @counts }}
+      format.html { render partial: 'searches/analytics', status: :ok, locals: { counts: @counts } }
     end
   end
 
@@ -27,6 +27,7 @@ class SearchesController < ApplicationController
       if ignore_char_deletion?(last_search, @search)
         format.html { render partial: 'searches/save', status: :ok }
       elsif @search.save
+        Count.find_or_create_by(text: @search.text, user: request.remote_ip).increment!(:count)
         format.html { render partial: 'searches/save', status: :ok }
 
       else
@@ -47,13 +48,15 @@ class SearchesController < ApplicationController
   end
 
   def remove_last_saved_search(last_search, search)
-    id = nil
-
-    if last_search && search.text.strip.start_with?(last_search.text.strip) && last_search.text != search.text
-      id = last_search.id
-      last_search.destroy
+    unless last_search && search.text.strip.start_with?(last_search.text.strip) && last_search.text != search.text
+      return
     end
-    id
+
+    last_search.destroy
+    Count.where(text: last_search.text, user: request.remote_ip).first.decrement!(:count)
+    return unless Count.where(text: last_search.text, user: request.remote_ip).first.count == 0
+
+    Count.where(text: last_search.text, user: request.remote_ip).first.destroy
   end
 
   def search_params

@@ -1,11 +1,11 @@
 
-<% counts.each do |name, count| %>
+<% counts.each do | count| %>
   <li>
   <span>
-    <%= name %> 
+    <%= count.text %> 
   </span>
   <span>
-    (<%= count %>)
+    (<%= count.count %>)
   </span>
   </li>
 <% end %>
