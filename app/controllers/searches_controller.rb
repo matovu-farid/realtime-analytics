@@ -17,10 +17,14 @@ class SearchesController < ApplicationController
     respond_to do |format|
       if ignore_char_deletion?(last_search, @search)
         format.turbo_stream
-        format.json { render json: @search, status: :ok }
+        format.json { render json: @searches, status: :ok }
+        # add an html format that displays all the searches and displays a partial in searces/search
+        format.html { render partial:"searches/save", status: :ok}
       elsif @search.save
         format.turbo_stream
-        format.json { render json: @search, status: :created }
+        format.json { render json: @searches, status: :created }
+        format.html { render partial: "searches/save", status: :ok }
+
       else
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @search.errors, status: :unprocessable_entity }
@@ -35,7 +39,7 @@ class SearchesController < ApplicationController
   end
 
   def all_user_searches
-  Search.where(user: request.remote_ip).order(created_at: :asc)
+    Search.where(user: request.remote_ip).order(created_at: :asc)
   end
 
   def remove_last_saved_search(last_search, search)

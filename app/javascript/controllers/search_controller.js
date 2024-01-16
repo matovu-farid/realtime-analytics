@@ -14,14 +14,16 @@ export default class extends Controller {
   }
   search(text) {
     if (this.deque.length && this.deque[this.deque.length - 1].startsWith(text)) return;
-    while (this.deque.length  && text.startsWith(this.deque[this.deque.length - 1])) {
+    while (this.deque.length && text.startsWith(this.deque[this.deque.length - 1])) {
       this.deque.pop();
     }
     this.deque.push(text);
 
     this.debouncedSaveSearch();
   }
-
+  optimisticUpdate(text) {
+    this.searchesTarget.innerHTML = this.searchesTarget.innerHTML + `<li>${text}</li>`
+  }
   async saveSearch() {
     if (this.deque.length == 0) return;
 
@@ -29,19 +31,22 @@ export default class extends Controller {
     this.deque.shift()
 
     if (text.length == 0) return;
-
+    this.optimisticUpdate(text)
     try {
       const response = await post('searches/save', {
         body: JSON.stringify({ text: text }),
         contentType: "application/json",
 
-        responseKind: "turbo-stream"
+        responseKind: "html"
       });
 
       if (!response.ok) {
         throw new Error('Network response was not ok');
       } else {
-        // response.text.then(() => this.logTarget.textContent = '')
+        response.text.then((body) => {
+          this.searchesTarget.innerHTML = body;
+          this.logTarget.textContent = ''
+        })
 
       }
 
@@ -53,6 +58,7 @@ export default class extends Controller {
     this.debouncedSaveSearch();
 
   }
+
   debounce(func, wait) {
     let timeout;
     return function(...args) {
