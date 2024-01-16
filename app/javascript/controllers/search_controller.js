@@ -1,12 +1,13 @@
 import { Controller } from "@hotwired/stimulus"
-import { post } from '@rails/request.js'
+import { post, get } from '@rails/request.js'
 
 export default class extends Controller {
-  static targets = ["log", "searches"];
+  static targets = ["log", "searches", "analytics"];
   connect() {
-    this.debouncedSaveSearch = this.debounce(this.saveSearch, 2000);
+    this.debouncedSaveSearch = this.debounce(this.saveSearch, 500);
     this.deque = [];
   }
+  
 
   log(event) {
     this.logTarget.textContent = event.target.value;
@@ -14,7 +15,7 @@ export default class extends Controller {
   }
   search(text) {
     if (this.deque.length && this.deque[this.deque.length - 1].startsWith(text)) return;
-    while (this.deque.length && text.startsWith(this.deque[this.deque.length - 1])) {
+    while (this.deque.length && text.startsWith(this.deque[this.deque.length - 1]) && this.deque[this.deque.length - 1].length !== text.length) {
       this.deque.pop();
     }
     this.deque.push(text);
@@ -45,7 +46,8 @@ export default class extends Controller {
       } else {
         response.text.then((body) => {
           this.searchesTarget.innerHTML = body;
-          this.logTarget.textContent = ''
+          this.logTarget.textContent = '';
+          this.updateAnalytics();
         })
 
       }
@@ -58,7 +60,23 @@ export default class extends Controller {
     this.debouncedSaveSearch();
 
   }
+ updateAnalytics(){
+    get('searches/analytics', {
+      responseKind: "html"
+    }).then((response) => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      } else {
+        response.text.then((body) => {
+          this.analyticsTarget.innerHTML = body;
+        })
 
+      }
+    }).catch((error) => {
+      console.error('There has been a problem with your fetch operation:', error);
+    });
+
+  }
   debounce(func, wait) {
     let timeout;
     return function(...args) {

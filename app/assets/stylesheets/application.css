@@ -20,13 +20,36 @@
   border: 1px solid #000;
   padding: 5px;
   margin: 5px;
+  border-radius: 10px;
 }
 /* styles for realtime imput search field */
+ul {
+  padding: 0px;
+  margin: 0px;
+}
 
 /* styles for li elements search field */
 li {
   list-style: none;
+  list-style-type: none;
+  margin: 0px;
+}
+li:empty {
+
+}
+li:not(:empty) {
   padding: 5px;
   margin: 5px;
+  background-color: lightblue;
+  padding: 5px;
+  border-radius: 5px;
+}
+#search-results {
+  display: flex;
+  flex-direction: row;
+  
+}
+#search-results > * {
+  flex: 1;
 }
 
