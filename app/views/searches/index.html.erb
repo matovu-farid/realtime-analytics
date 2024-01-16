@@ -1,0 +1,15 @@
+<h1>Searches#index</h1>
+<p>Find me in app/views/searches/index.html.erb</p>
+<!--Realtime search box-->
+<div id="results" data-controller="search">
+  <input id="search" type="search" data-action="search#log" autocomplete = "off">
+  <ul >
+    <div data-search-target="searches" id="searches">
+      
+   
+      <%= render partial: :search, collection: @searches %>
+    </div>
+      <li data-search-target="log"></li>
+  </ul> 
+
+</div>

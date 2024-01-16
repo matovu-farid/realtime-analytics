@@ -1,0 +1,6 @@
+
+<%= turbo_stream.replace 'searches', partial: 'searches/search', collection: @searches%>
+
+<% if @removed_last_saved.present? %>
+  <%= turbo_stream.remove @removed_last_saved %>
+<% end %>
