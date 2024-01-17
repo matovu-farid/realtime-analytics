@@ -2,11 +2,11 @@ class SearchesController < ApplicationController
   def index
     # display all saved searches for the current user using ip address tracking
     @searches = all_user_searches
-    @counts = Count.where(user: request.remote_ip).order(count: :desc).limit(10)
+    @counts = Count.where(user: request.remote_ip).order(count: :desc).limit(5)
   end
 
   def analytics
-    @counts = Count.where(user: request.remote_ip).order(count: :desc).limit(10)
+    @counts = Count.where(user: request.remote_ip).order(count: :desc).limit(5)
     respond_to do |format|
       format.json { render json: Search.group(:text).count }
       format.html { render partial: 'searches/analytics', status: :ok, locals: { counts: @counts } }
