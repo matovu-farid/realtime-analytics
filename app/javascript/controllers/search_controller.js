@@ -7,14 +7,14 @@ export default class extends Controller {
     this.debouncedSaveSearch = this.debounce(this.saveSearch, 500);
     this.deque = [];
   }
-  
+
 
   log(event) {
-    this.logTarget.textContent = event.target.value;
     this.search(event.target.value);
   }
   search(text) {
     if (this.deque.length && this.deque[this.deque.length - 1].startsWith(text)) return;
+    this.logTarget.textContent = text, 100
     while (this.deque.length && text.startsWith(this.deque[this.deque.length - 1]) && this.deque[this.deque.length - 1].length !== text.length) {
       this.deque.pop();
     }
@@ -23,7 +23,7 @@ export default class extends Controller {
     this.debouncedSaveSearch();
   }
   optimisticUpdate(text) {
-    this.searchesTarget.innerHTML = this.searchesTarget.innerHTML + `<li>${text}</li>`
+    this.searchesTarget.innerHTML = this.searchesTarget.innerHTML + `<li class="text-start">${text}</li>`
   }
   async saveSearch() {
     if (this.deque.length == 0) return;
@@ -60,7 +60,7 @@ export default class extends Controller {
     this.debouncedSaveSearch();
 
   }
- updateAnalytics(){
+  updateAnalytics() {
     get('searches/analytics', {
       responseKind: "html"
     }).then((response) => {

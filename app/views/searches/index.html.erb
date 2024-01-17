@@ -4,21 +4,21 @@
   <div  class="flex w-full justify-center">
       <input id="search" type="search" data-action="search#log" autocomplete = "off">
   </div>
-  <div id="search-results">
+  <div id="search-results" class="flex flex-row gap-3">
     <div class="flex flex-col text-center">
       <p class="text-lg">Log</p>
-    <ul  class="flex flex-col text-center">
-        
-      <div data-search-target="searches" id="searches" class="text-start">
-        <%= render partial: :search, collection: @searches %>
-      </div>
-        <li data-search-target="log"></li>
-    </ul>
+      <ul  class="flex flex-col ">
+          
+        <div data-search-target="searches" id="searches" class="text-start">
+          <%= render partial: :search, collection: @searches %>
+        </div>
+          <li data-search-target="log" class="text-start"></li>
+      </ul>
     </div>
     
     <div id="analytics" class="flex flex-col text-center" >
        
-        <p class="text-lg"> Top 10 searches</p>
+        <p class="text-lg "> Top 10 searches</p>
 
         <ul data-search-target="analytics" class="text-start">
           <%= render partial:  'searches/analytics', locals: {counts: @counts}  %>
